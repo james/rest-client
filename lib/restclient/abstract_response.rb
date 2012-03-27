@@ -32,9 +32,7 @@ module RestClient
     # Return the default behavior corresponding to the response code:
     # the response itself for code in 200..206, redirection for 301, 302 and 307 in get and head cases, redirection for 303 and an exception in other cases
     def return! request = nil, result = nil, & block
-      if (200..207).include? code
-        self
-      elsif [301, 302, 307].include? code
+      if [301, 302, 307].include? code
         unless [:get, :head].include? args[:method]
           raise Exceptions::EXCEPTIONS_MAP[code].new(self, code)
         else
@@ -44,10 +42,8 @@ module RestClient
         args[:method] = :get
         args.delete :payload
         follow_redirection(request, result, & block)
-      elsif Exceptions::EXCEPTIONS_MAP[code]
-        raise Exceptions::EXCEPTIONS_MAP[code].new(self, code)
       else
-        raise RequestFailed.new(self, code)
+        self
       end
     end
 
